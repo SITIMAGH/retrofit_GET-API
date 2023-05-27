@@ -1,0 +1,13 @@
+package com.example.retrofit_mod8
+
+import com.google.gson.annotations.SerializedName
+
+data class APIrespons(
+    @SerializedName("status") val status: String,
+    @SerializedName("data") val data: List<Mahasiswa>
+)
+data class Mahasiswa(
+    @SerializedName("NIM") val nim: String,
+    @SerializedName("Nama") val nama: String,
+    @SerializedName("Telepon") val telepon: String
+)
