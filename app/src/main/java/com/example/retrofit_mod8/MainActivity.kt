@@ -1,29 +1,37 @@
 package com.example.retrofit_mod8
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.example.retrofit_mod8.Network.ApiClient
 import com.example.retrofit_mod8.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: RvAdapter
+    private lateinit var adapter: RVAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        adapter = RvAdapter(this@MainActivity, arrayListOf())
-        binding.rvMain.adapter = adapter
-        binding.rvMain.setHasFixedSize(true)
+
+        adapter = RVAdapter(this@MainActivity, arrayListOf())
+        binding.recycleview.adapter = adapter
+        binding.recycleview.setHasFixedSize(true)
+
+    }
+    override fun onResume() {
+        super.onResume()
         remoteGetdatamahasiswa()
     }
+
     private fun remoteGetdatamahasiswa() {
-        APIClient.apiServices.getdatamahasiswa().enqueue(object :
-            Callback<APIrespons> {
-            override fun onResponse(call: Call<APIrespons>,
-                                    response: Response<APIrespons>) {
+        ApiClient.apiService.remoteGetdatamahasiswa().enqueue(object : Callback<ApiResponse> {
+            override fun onResponse(call: Call<ApiResponse>, response: Response<ApiResponse>) {
                 if (response.isSuccessful) {
                     val apiResponse = response.body()
                     val data = apiResponse?.data
@@ -32,8 +40,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            override fun onFailure(call: Call<APIrespons>, t:
-            Throwable) {
+            override fun onFailure(call: Call<ApiResponse>, t: Throwable) {
                 Log.d("Error", t.stackTraceToString())
             }
         })
@@ -41,4 +48,16 @@ class MainActivity : AppCompatActivity() {
     private fun setDataToAdapter(data: List<Mahasiswa>) {
         adapter.setData(data)
     }
+    fun Insert(view: View) {
+        val intent = Intent(this, com.example.retrofit_mod8.Fitur.Insert::class.java)
+        startActivity(intent)
+    }
+    override fun onBackPressed() {
+        val intent = Intent(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
+    }
+
 }
